@@ -37,6 +37,35 @@ spark = SparkSession.builder \
     .appName("PostgresIntegration") \
     .config("spark.jars", os.path.join(script_dir, "postgresql-42.6.0.jar")) \
     .getOrCreate()
+    
+
+# Check if the specified table already exists
+existing_tables = spark.read \
+    .format("jdbc") \
+    .option("url", f"jdbc:postgresql://{args.host}:{args.port}/{args.database}") \
+    .option("dbtable", "information_schema.tables") \
+    .option("user", args.user) \
+    .option("password", password) \
+    .option("driver", "org.postgresql.Driver") \
+    .load()
+
+table_exists = existing_tables.filter(col("table_name") == args.table).count() > 0
+
+# If the table exists, print existing tables in the specified database
+if table_exists:
+    print(f"The table '{args.table}' already exists in the '{args.database}' database.")
+    print("Existing tables in the database:")
+    existing_tables_list = existing_tables.filter(col("table_schema") == "public").select("table_name").collect()
+    for table_row in existing_tables_list:
+        print(table_row["table_name"])
+
+    # Give the option to enter another table name
+    new_table_name = input("\nEnter a new table name or press Enter to exit: ").strip()
+    if new_table_name:
+        args.table = new_table_name
+    else:
+        print("Exiting the script.")
+        exit()
 
 # reading parquet file to df
 parquet_df = spark.read.parquet(args.file)
