@@ -53,7 +53,7 @@ table_exists = existing_tables.filter(col("table_name") == args.table).count() >
 
 # If the table exists, print existing tables in the specified database
 if table_exists:
-    print(f"The table '{args.table}' already exists in the '{args.database}' database.")
+    print(f"\nThe table '{args.table}' already exists in the '{args.database}' database.")
     print("Existing tables in the database:")
     existing_tables_list = existing_tables.filter(col("table_schema") == "public").select("table_name").collect()
     for table_row in existing_tables_list:
