@@ -5,3 +5,7 @@ this python script is used to load parquet data into postgress database using py
 - run <code>python p2p_script.py -h</code> for usage.
 - when script is succcessfull, message: <code>Script completed successfully! Data loaded.</code>
 - enjoy!
+
+# Screenshots
+<img src="screenshots/script_run.png">
+<img src="screenshots/psql_count.png">
