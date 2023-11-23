@@ -8,6 +8,7 @@ from pyspark.sql.functions import col
 import argparse
 import getpass
 import os
+import time
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -30,6 +31,8 @@ else:
 
 args = parser.parse_args()
 
+spark_start_time = time.time()
+
 spark = SparkSession.builder \
     .appName("PostgresIntegration") \
     .config("spark.jars", os.path.join(script_dir, "postgresql-42.6.0.jar")) \
@@ -50,16 +53,20 @@ properties = {
     "driver": "org.postgresql.Driver"
 }
 
+loading_start_time = time.time()
+
 lower_parquet.write \
     .mode("overwrite") \
     .jdbc(url=postgres_url, table=args.table, properties=properties)
+    
+loading_end_time = time.time()
 
 # Stop the Spark session
 spark.stop()
 
-print("Script completed successfully! Data loaded")
+spark_end_time = time.time()
 
+spark_time = spark_end_time - spark_start_time
+loading_time = loading_end_time - loading_start_time
 
-
-      
-
+print(f"Script completed successfully! Data loaded.\n\n[SparkTime: {round(spark_time,2)}s], [PgLoadingTime: {round(loading_time,2)}s]")
