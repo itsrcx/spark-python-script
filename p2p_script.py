@@ -19,7 +19,7 @@ parser.add_argument("-H", "--host", default="localhost", help="PostgreSQL server
 parser.add_argument("-p", "--port", type=int, default=5432, help="PostgreSQL server port (default: 5432)")
 parser.add_argument("-d", "--database", default="postgres", help="PostgreSQL database name (default: postgres)")
 parser.add_argument("-f", "--file", required=True, help="Path to Parquet file (required)")
-parser.add_argument("-t", "--table", required=True, help="Table name in PostgreSQL (required)")
+parser.add_argument("-t", "--table", required=True, help="Table name to create table in PostgreSQL (required)")
 parser.add_argument("-U", "--user", default="postgres", help="PostgreSQL user (default: postgres)")
 
 args, unknown_args = parser.parse_known_args()
